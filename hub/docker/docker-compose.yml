@@ -1,0 +1,56 @@
+version: '3.7'
+
+x-shared-api-variables: &shared-api-variables
+  NODE_ENV: production
+  ENV_PREFIX: ONIFY_
+  INTERPRET_CHAR_AS_DOT: _
+  ONIFY_db_elasticsearch_host: http://linked-elasticsearch:9200
+  ONIFY_apiTokens_app_secret: dIpgmeyKRccc9SL5pXp89temXSLNWGuK9Ry8qMYu
+  ONIFY_adminUser_username: admin
+  ONIFY_adminUser_password: Pa$$$$word3 # Dollar has to be escaped by dollar
+  ONIFY_adminUser_email: hello@onify.co
+  ONIFY_initialLicense: <license> # retrieve Onify license here hello@onify.co
+  ONIFY_resources_baseDir: ./resources
+  ONIFY_resources_tempDir: ./temp
+
+x-shared-api-volumes: &shared-api-volumes # make sure the paths exist
+  - ./tmp/resources:/usr/app/resources
+  - ./tmp/temp_storage:/usr/app/temp
+
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.6.2
+    ports:
+      - 9200:9200
+    environment:
+      - ES_JAVA_OPTS=-Xms256m -Xmx256m
+      - discovery.type=single-node
+  api:
+    image: eu.gcr.io/onify-k8s/hub-api/v2:latest # replace :latest with desired semver version
+    environment:
+      <<: *shared-api-variables
+      ONIFY_autoinstall: "true"
+    ports:
+      - 8181:8181
+    links:
+      - elasticsearch:linked-elasticsearch
+    volumes: *shared-api-volumes
+  worker:
+    image: eu.gcr.io/onify-k8s/hub-api/v2:latest # replace :latest with desired semver version
+    command: worker
+    environment:
+      <<: *shared-api-variables
+      ONIFY_worker_cleanupInterval: "30"
+    links:
+      - elasticsearch:linked-elasticsearch
+    volumes: *shared-api-volumes
+  app:
+    image: gcr.io/onify-containers/hub-app:master
+    environment:
+      ONIFY_API_TOKEN: Bearer YXBwOmRJcGdtZXlLUmNjYzlTTDVwWHA4OXRlbVhTTE5XR3VLOVJ5OHFNWXU=
+      ONIFY_API_URL_INTERNAL: http://linked-api:8181/api/v2
+      ONIFY_API_URL_EXTERNAL: http://localhost:8181/api/v2
+    links:
+      - api:linked-api
+    ports:
+      - 3000:3000

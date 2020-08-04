@@ -1,0 +1,51 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: app-secrets
+type: Opaque
+data:
+  api_token: <base64-encoded-string> # "Bearer api_token_secret_base64"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: onify-app
+spec:
+  selector:
+    matchLabels:
+      app: app
+  template:
+    metadata:
+      labels:
+        app: app
+    spec:
+      imagePullSecrets:
+       - name: onify_regcred
+      containers:
+      - name: app
+          image: eu.gcr.io/onify-k8s/hub-app/v1:1
+        env:
+          - name: ONIFY_API_TOKEN
+            valueFrom:
+             secretKeyRef:
+               name: app-secrets
+               key: api_token
+         - name: ONIFY_API_URL_INTERNAL
+           value: http://api:8181/api/v2
+         - name: ONIFY_API_URL_EXTERNAL
+           value: <api_public_host>
+        ports:
+        - name: app
+          containerPort: 3000
+--- # Expose app as service
+apiVersion: v1
+kind: Service
+metadata:
+  name: app
+spec:
+  ports:
+    - protocol: TCP
+      name: app
+      port: 3000
+  selector:
+    app: app
