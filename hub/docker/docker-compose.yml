@@ -1,15 +1,19 @@
 version: '3.7'
 
 x-shared-api-variables: &shared-api-variables
-  NODE_ENV: production
+  NODE_ENV: development
   ENV_PREFIX: ONIFY_
   INTERPRET_CHAR_AS_DOT: _
   ONIFY_db_elasticsearch_host: http://linked-elasticsearch:9200
-  ONIFY_apiTokens_app_secret: dIpgmeyKRccc9SL5pXp89temXSLNWGuK9Ry8qMYu
+  ONIFY_db_indexPrefix: dev
+  ONIFY_client_code: onify
+  ONIFY_client_instance: docker
+  ONIFY_client_secret: p89temXSLNWGuK9Ry8qMYudIpgmeyKRccc9SL5pX
+  ONIFY_evaluationLicense: ${LICENSE} # Contact Onify at hello@onify.co for license
   ONIFY_adminUser_username: admin
   ONIFY_adminUser_password: Pa$$$$word3 # Dollar has to be escaped by dollar
   ONIFY_adminUser_email: hello@onify.co
-  ONIFY_initialLicense: <license> # retrieve Onify license here hello@onify.co
+  ONIFY_apiTokens_app_secret: dIpgmeyKRccc9SL5pXp89temXSLNWGuK9Ry8qMYu
   ONIFY_resources_baseDir: ./resources
   ONIFY_resources_tempDir: ./temp
 
@@ -25,8 +29,9 @@ services:
     environment:
       - ES_JAVA_OPTS=-Xms256m -Xmx256m
       - discovery.type=single-node
+      - cluster.name=onify
   api:
-    image: eu.gcr.io/onify-k8s/hub-api/v2:latest # replace :latest with desired semver version
+    image: eu.gcr.io/onify-k8s/hub-api/v2:2 # replace :2 with desired semver version
     environment:
       <<: *shared-api-variables
       ONIFY_autoinstall: "true"
@@ -36,7 +41,7 @@ services:
       - elasticsearch:linked-elasticsearch
     volumes: *shared-api-volumes
   worker:
-    image: eu.gcr.io/onify-k8s/hub-api/v2:latest # replace :latest with desired semver version
+    image: eu.gcr.io/onify-k8s/hub-api/v2:2 # replace :2 with desired semver version
     command: worker
     environment:
       <<: *shared-api-variables
