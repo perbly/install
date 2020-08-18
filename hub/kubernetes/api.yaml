@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Secret
 metadata:
-  name: api-secrets
+  name: onify-api-secrets
 type: Opaque
 data:
   admin_password: <base64-encoded-string> # admin password
@@ -11,59 +11,106 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: api-config
-  namespace: default
+  name: onify-api-config
 data:
   NODE_ENV: production # environment
   ENV_PREFIX: ONIFY_ #
   INTERPRET_CHAR_AS_DOT: _
-  ONIFY_adminUser_username: admin
-  ONIFY_autoinstall: "true"
-  ONIFY_client_code: onify
-  ONIFY_client_instance: evaluation
   ONIFY_db_elasticsearch_host: http://elasticsearch:9200
   ONIFY_db_indexPrefix: onify # indices will be prefixed with this string
-  ONIFY_initialLicense: <onify_license> # Contact Onify at hello@onify.co for license
+  ONIFY_client_code: onify
+  ONIFY_client_instance: evaluation
+  ONIFY_evaluationLicense: <onify_license> # Contact Onify at hello@onify.co for license
+  ONIFY_adminUser_username: admin
+  ONIFY_adminUser_email: hello@onify.co
   ONIFY_resources_baseDir: /usr/share/onify/resources
   ONIFY_resources_tempDir: /usr/share/onify/temp_resources
   ONIFY_websockets_agent_url: ws://agent-server:8080/hub
---- # Api
+---
+# Shared storage
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: onify-resources-pv
+  labels:
+    app: onify
+    tier: resources
+  annotations:
+    volume.alpha.kubernetes.io/storage-class: onify-resources-pv
+spec:
+  storageClassName: onify-resources-pv
+  accessModes:
+    - ReadWriteMany
+  capacity:
+    storage: 10Gi
+  persistentVolumeReclaimPolicy: Recycle
+  hostPath:
+    path: "/Users/Shared/onify/resources" # Local OSX example
+    type: Directory
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: onify-resources-pvc
+  labels:
+    app: onify
+    tier: resources
+spec:
+  storageClassName: onify-resources-pv
+  selector:
+    matchLabels:
+      app: onify
+      tier: resources
+  resources:
+    requests:
+      storage: 10Gi
+  accessModes:
+    - ReadWriteMany
+---
+# Api
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: onify-api
+  labels:
+    app: onify
+    tier: api
 spec:
   selector:
     matchLabels:
-      app: api
+      app: onify
+      tier: api
   template:
     metadata:
       labels:
-        app: api
+        app: onify
+        tier: api
     spec:
       imagePullSecrets:
-      - name: onify_regcred
+      - name: onify-regcred
       containers:
       - name: api
         image: eu.gcr.io/onify-k8s/hub-api/v2:2
         envFrom:
         - configMapRef:
-            name: api-config
+            name: onify-api-config
         env:
+        - name: ONIFY_autoinstall
+          value: "true"
         - name: ONIFY_adminUser_password
           valueFrom:
             secretKeyRef:
-              name: api-secrets
+              name: onify-api-secrets
               key: admin_password
         - name: ONIFY_apiTokens_app_secret
           valueFrom:
             secretKeyRef:
-              name: api-secrets
+              name: onify-api-secrets
               key: app_token_secret
         - name: ONIFY_client_secret
           valueFrom:
             secretKeyRef:
-              name: api-secrets
+              name: onify-api-secrets
               key: client_secret
         volumeMounts:
         - name: resources
@@ -72,38 +119,48 @@ spec:
         - name: api
           containerPort: 8181
       volumes:
-      - name: resources
-        hostPath:
-          path: /data/onify # host resource folder
-          type: Directory
---- # Expose api as service
+        - name: resources
+          persistentVolumeClaim:
+            claimName: onify-resources-pvc
+---
+# Expose api as service
 apiVersion: v1
 kind: Service
 metadata:
-  name: api
+  name: onify-api
+  labels:
+    app: onify
+    tier: api
 spec:
+  selector:
+    app: onify
+    tier: api
   ports:
     - protocol: TCP
-      name: api
+      name: onify-api
       port: 8181
-  selector:
-    app: api
---- # Worker
+---
+# Worker
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: onify-worker
+  labels:
+    app: onify
+    tier: worker
 spec:
   selector:
     matchLabels:
-      app: worker
+      app: onify
+      tier: worker
   template:
     metadata:
       labels:
-        app: worker
+        app: onify
+        tier: worker
     spec:
       imagePullSecrets:
-       - name: onify_regcred
+       - name: onify-regcred
       containers:
       - name: worker
         image: eu.gcr.io/onify-k8s/hub-api/v2:2
@@ -111,31 +168,29 @@ spec:
         - worker # act as worker
         envFrom:
         - configMapRef:
-          name: api-config
+            name: onify-api-config
         env:
         - name: ONIFY_worker_cleanupInterval # interval to clean up temporary files, in seconds
           value: "300"
         - name: ONIFY_adminUser_password
           valueFrom:
             secretKeyRef:
-              name: api-secrets
+              name: onify-api-secrets
               key: admin_password
         - name: ONIFY_apiTokens_app_secret
           valueFrom:
             secretKeyRef:
-              name: api-secrets
+              name: onify-api-secrets
               key: app_token_secret
         - name: ONIFY_client_secret
           valueFrom:
             secretKeyRef:
-              name: api-secrets
+              name: onify-api-secrets
               key: client_secret
         volumeMounts:
         - name: resources
           mountPath: /usr/share/onify
       volumes:
-      - name: resources
-        hostPath:
-          path: /data/onify
-          type: Directory
-
+        - name: resources
+          persistentVolumeClaim:
+            claimName: onify-resources-pvc

@@ -12,7 +12,7 @@ spec:
         app: agent-server
     spec:
      imagePullSecrets:
-      - name: onify_regcred
+      - name: onify-regcred
      containers:
      - name: agent-server
        image: gcr.io/onify-containers/agent:master

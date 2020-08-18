@@ -4,3 +4,4 @@ tmp/
 .env
 keyfile.json
 .env
+_data

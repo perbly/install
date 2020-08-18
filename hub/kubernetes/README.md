@@ -18,18 +18,18 @@ To retreive images from the onify registry you need a registry secret. Contact O
 
 # Deployment pipeline
 
-1. elasticsearch 7 container unless you have your own
+1. [elasticsearch 7](#elasticsearch) container unless you have your own
 2. Onify registration credentials (regcred-secret.yaml)
 2. agent-server container
 3. Setup hub-api container and environment variables
 4. Setup hub-app container and environment variables
-5. Optional traefik container with [external hosts](#traefik) and TLS termination
+5. Optional [traefik](#traefic) container with external hosts and TLS termination
 
 # Secrets
 
 Secrets are saved in base64 format
 
-`onify_regcred`: Registry credentials, contact Onify at hello@onify.co to get your credentials
+`onify-regcred`: Registry credentials, contact Onify at hello@onify.co to get your credentials
 `admin_password`: Admin password
 `app_token_secret`: App token secret
 `client_secret`: Client secret for hashing passwords and other secret information
@@ -58,6 +58,24 @@ Secrets are saved in base64 format
 * `ONIFY_API_TOKEN` - Auth token for API. from secret `api_token`
 * `ONIFY_API_URL_EXTERNAL` - External url for frontend API calls, should use `api_public_host`
 * `ONIFY_API_URL_INTERNAL` - Internal url for backend connection with API, defaults to `http://api:8181/api/v2`, depends on exposed api service
+
+# Elasticsearch
+
+Onify persistance.
+
+## `elasticsearch.yaml`
+
+Elasticsearch manifest.
+
+Configuration:
+- `PersistentVolume`: Should be altered to match kubernetes installation
+  - `hostPath.path`:Shared directory between
+
+When applied the container can be tested by:
+
+```sh
+kubectl exec -it elasticsearch-0 -- curl http://localhost:9200
+```
 
 # Traefik
 

@@ -25,7 +25,7 @@ cat keyfile.json | docker login -u _json_key --password-stdin https://eu.gcr.io
 
 ## Onify License
 
-Get your Onify docker license and add it as an environment variable in a `.env` file
+Get your Onify docker license key from hello@onify.co and add it as an environment variable in an `.env` file
 
 ```
 LICENSE=<license key>
@@ -36,3 +36,9 @@ LICENSE=<license key>
 ```sh
 docker-compose up
 ```
+
+# Reset Hub
+
+To reset the entire hub you can delete the indices and restart the api:
+
+

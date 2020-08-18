@@ -235,7 +235,8 @@ subjects:
   - kind: ServiceAccount
     name: traefik-ingress-controller
     namespace: traefik
---- # agent-server
+---
+# agent-server
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
@@ -253,7 +254,8 @@ spec:
       middlewares:
       - name: httpsredirectscheme
         namespace: traefik
----  # Api
+---
+# Api
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
@@ -271,7 +273,8 @@ spec:
       middlewares:
       - name: httpsredirectscheme
         namespace: traefik
----  # App
+---
+# App
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
