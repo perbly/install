@@ -16,6 +16,7 @@ x-shared-api-variables: &shared-api-variables
   ONIFY_apiTokens_app_secret: dIpgmeyKRccc9SL5pXp89temXSLNWGuK9Ry8qMYu
   ONIFY_resources_baseDir: ./resources
   ONIFY_resources_tempDir: ./temp
+  ONIFY_websockets_agent_url: ws://linked-agent-server:8080/hub
 
 x-shared-api-volumes: &shared-api-volumes # make sure the paths exist
   - ./tmp/resources:/usr/app/resources
@@ -30,6 +31,14 @@ services:
       - ES_JAVA_OPTS=-Xms256m -Xmx256m
       - discovery.type=single-node
       - cluster.name=onify
+  agent-server:
+    image: gcr.io/onify-containers/agent:master # replace :master with desired semver version
+    environment:
+      hub_version: v2
+      log_level: "2"
+      log_type: "1"
+    ports:
+      - 8080:8080
   api:
     image: eu.gcr.io/onify-k8s/hub-api/v2:2 # replace :2 with desired semver version
     environment:
@@ -39,6 +48,7 @@ services:
       - 8181:8181
     links:
       - elasticsearch:linked-elasticsearch
+      - agent-server:linked-agent-server
     volumes: *shared-api-volumes
   worker:
     image: eu.gcr.io/onify-k8s/hub-api/v2:2 # replace :2 with desired semver version
@@ -48,6 +58,7 @@ services:
       ONIFY_worker_cleanupInterval: "30"
     links:
       - elasticsearch:linked-elasticsearch
+      - agent-server:linked-agent-server
     volumes: *shared-api-volumes
   app:
     image: gcr.io/onify-containers/hub-app:master
