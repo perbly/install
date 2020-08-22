@@ -8,12 +8,12 @@ x-shared-api-variables: &shared-api-variables
   ONIFY_db_indexPrefix: dev
   ONIFY_client_code: onify
   ONIFY_client_instance: docker
-  ONIFY_client_secret: p89temXSLNWGuK9Ry8qMYudIpgmeyKRccc9SL5pX
+  ONIFY_client_secret: ${API_CLIENT_SECRET}
   ONIFY_evaluationLicense: ${LICENSE} # Contact Onify at hello@onify.co for license
   ONIFY_adminUser_username: admin
-  ONIFY_adminUser_password: Pa$$$$word3 # Dollar has to be escaped by dollar
+  ONIFY_adminUser_password: ${ADMIN_PASSWORD} # Dollar has to be escaped by dollar
   ONIFY_adminUser_email: hello@onify.co
-  ONIFY_apiTokens_app_secret: dIpgmeyKRccc9SL5pXp89temXSLNWGuK9Ry8qMYu
+  ONIFY_apiTokens_app_secret: ${API_APP_SECRET}
   ONIFY_resources_baseDir: ./resources
   ONIFY_resources_tempDir: ./temp
   ONIFY_websockets_agent_url: ws://linked-agent-server:8080/hub
@@ -63,7 +63,7 @@ services:
   app:
     image: gcr.io/onify-containers/hub-app:master
     environment:
-      ONIFY_API_TOKEN: Bearer YXBwOmRJcGdtZXlLUmNjYzlTTDVwWHA4OXRlbVhTTE5XR3VLOVJ5OHFNWXU=
+      ONIFY_API_TOKEN: ${APP_API_TOKEN}
       ONIFY_API_URL_INTERNAL: http://linked-api:8181/api/v2
       ONIFY_API_URL_EXTERNAL: http://localhost:8181/api/v2
     links:
