@@ -28,19 +28,27 @@ services:
     ports:
       - 9200:9200
     environment:
-      - ES_JAVA_OPTS=-Xms256m -Xmx256m
+      - ES_JAVA_OPTS=-Xms256m -Xmx256m # can be increased but make sure it doesn't exceed docker limits
       - discovery.type=single-node
       - cluster.name=onify
+    healthcheck:
+      test: ["CMD-SHELL", "curl --silent --fail localhost:9200/_cluster/health || exit 1"]
+      interval: 10s
+      timeout: 5m
+      retries: 30
   agent-server:
     image: gcr.io/onify-containers/agent:master # replace :master with desired semver version
     environment:
       hub_version: v2
       log_level: "2"
-      log_type: "1"
+      log_type: "2"
     ports:
       - 8080:8080
   api:
     image: eu.gcr.io/onify-k8s/hub-api/v2:2 # replace :2 with desired semver version
+    restart: always
+    depends_on:
+      - elasticsearch
     environment:
       <<: *shared-api-variables
       ONIFY_autoinstall: "true"
@@ -53,6 +61,9 @@ services:
   worker:
     image: eu.gcr.io/onify-k8s/hub-api/v2:2 # replace :2 with desired semver version
     command: worker
+    restart: always
+    depends_on:
+      - elasticsearch
     environment:
       <<: *shared-api-variables
       ONIFY_worker_cleanupInterval: "30"
@@ -62,6 +73,9 @@ services:
     volumes: *shared-api-volumes
   app:
     image: gcr.io/onify-containers/hub-app:master
+    restart: always
+    depends_on:
+      - api
     environment:
       ONIFY_API_TOKEN: ${APP_API_TOKEN}
       ONIFY_API_URL_INTERNAL: http://linked-api:8181/api/v2

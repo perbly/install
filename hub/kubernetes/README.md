@@ -30,9 +30,9 @@ To retreive images from the onify registry you need a registry secret. Contact O
 Secrets are saved in base64 format
 
 `onify-regcred`: Registry credentials, contact Onify at hello@onify.co to get your credentials
-`admin_password`: Admin password
+`admin_password`: Administrator password. Minimum 8 chars and maximum 100 chars. Requires both uppercase and lowercase letters and must also contain digits and symbols
 `app_token_secret`: App token secret
-`client_secret`: Client secret for hashing passwords and other secret information
+`client_secret`: String used for signing, previously known as private key. If a migration is imminent: use the same secret as the old environment
 `api_token`: Usually `Bearer app:<app_token_secret>` where `app:<app_token_secret>` also is base64 encoded
 
 # Environment variables
