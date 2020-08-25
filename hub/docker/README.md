@@ -39,16 +39,20 @@ Add a file named `.env` in the same directory. Prepare the file with environment
 
 ```
 ADMIN_PASSWORD=<administrator password>
-API_CLIENT_SECRET=<hash secret>
-API_APP_SECRET=<Onify hub app secret>
 APP_API_TOKEN=
+API_APP_SECRET=<Onify hub app secret>
+API_CLIENT_SECRET=<sign secret>
+API_CLIENT_CODE=
+API_CLIENT_INSTANCE=
 LICENSE=
 ```
 
 - `ADMIN_PASSWORD`: administrator password. Minimum 8 chars and maximum 100 chars. Requires both uppercase and lowercase letters and must also contain digits and symbols
 - `API_CLIENT_SECRET`: secret string used for signing, previously known as private key. If a migration is imminent: use the same secret as the old environment
-- `API_APP_SECRET`: hub app application secret for the api
+- `API_APP_SECRET`: hub app application secret for the api, generate your own very secret key
 - `APP_API_TOKEN`: [Api token](#api-token) used by app for backend communication
+- `API_CLIENT_CODE`: Client code, decided by Onify when generating license
+- `API_CLIENT_INSTANCE`:  Client instance (or purpose), decided by Onify when generating license
 - `LICENSE`: [Onify license](#onify-license)
 
 ### Api-token
@@ -71,13 +75,15 @@ Add the result as `APP_API_TOKEN` value in `.env` file where the value is surrou
 
 ### Onify License
 
-Get your Onify docker license key from hello@onify.co and add it to `LICENSE` variable in the `.env` file.
+Get your Onify docker license key, client code, and client instance from hello@onify.co and add them as values for `LICENSE`, `API_CLIENT_CODE`, and `API_CLIENT_INSTANCE` the `.env` file.
 
 ```
 ADMIN_PASSWORD=<administrator password>
-API_CLIENT_SECRET=<hash secret>
 API_APP_SECRET=<Onify hub app secret>
 APP_API_TOKEN="<Onify hub app api token>"
+API_CLIENT_SECRET=<sign secret>
+API_CLIENT_CODE=<Client code from Onify>
+API_CLIENT_INSTANCE=<Client instance from Onify>
 LICENSE=<Onify license>
 ```
 
