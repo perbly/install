@@ -7,9 +7,9 @@ Use docker compose to run your hub.
 
 To retreive images from the onify registry you need a registry secret. Contact Onify at hello@onify.co for this.
 
-* hub-api
-* hub-app
-* agent-server
+* hub/api
+* hub/app
+* hub/agent-server
 
 # Preparations
 
