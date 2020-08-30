@@ -25,12 +25,12 @@ Login to docker with:
 
 For OSX or Linux
 ```sh
-cat keyfile.json | docker login -u _json_key --password-stdin https://eu.gcr.io
+cat keyfile.json | docker login -u _json_key --password-stdin https://eu.gcr.io/onify-images
 ```
 
 or Windows
 ```sh
-docker login -u _json_key --password-stdin https://eu.gcr.io < keyfile.json
+docker login -u _json_key --password-stdin https://eu.gcr.io/onify-images < keyfile.json
 ```
 
 ## Env file
