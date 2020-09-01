@@ -67,8 +67,8 @@ echo "Bearer $(echo -n "app:$API_APP_SECRET" | base64)"
 
 or Windows (Powershell):
 ```powershell
-$APP_API_TOKEN=<Onify hub app secret>
-"Bearer " + [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes("app:" + $APP_API_TOKEN))
+$API_APP_SECRET=<Onify hub app secret>
+"Bearer " + [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes("app:" + $API_APP_SECRET))
 ```
 
 Add the result as `APP_API_TOKEN` value in `.env` file where the value is surrounded by quotes.
