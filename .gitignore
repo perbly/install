@@ -3,5 +3,6 @@
 tmp/
 .env
 keyfile.json
+keyfile.yaml
 .env
 _data

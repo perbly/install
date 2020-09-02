@@ -11,7 +11,7 @@ To retreive images from the onify registry you need a registry secret. Contact O
 
 # Preparations
 
-1. Get your container registry secret
+1. Get your container [registry credentials](#docker-registry-credentials)
 2. Get your Onify license
 3. Clone repository (optional)
 4. Make sure container manifest labels are unique for your organization
@@ -19,20 +19,33 @@ To retreive images from the onify registry you need a registry secret. Contact O
 # Deployment pipeline
 
 1. [elasticsearch 7](#elasticsearch) container unless you have your own
-2. Onify registration credentials (regcred-secret.yaml)
+2. [Onify registration credentials](#docker-registry-credentials)
 2. agent-server container
 3. Setup hub-api container and environment variables
 4. Setup hub-app container and environment variables
 5. Optional [traefik](#traefic) container with external hosts and TLS termination
 
+# Docker registry credentials
+
+Registry credentials, contact Onify at hello@onify.co to get your `keyfile.json`.
+
+Run the following command to add your registry secret:
+
+```sh
+kubectl create secret docker-registry onify-regcred \
+  --docker-server=eu.gcr.io \
+  --docker-username=_json_key \
+  --docker-password="$(cat keyfile.json)" \
+  --docker-email=hello@onify.co
+```
+
 # Secrets
 
 Secrets are saved in base64 format
 
-`onify-regcred`: Registry credentials, contact Onify at hello@onify.co to get your credentials
-`admin_password`: Administrator password. Minimum 8 chars and maximum 100 chars. Requires both uppercase and lowercase letters and must also contain digits and symbols
-`app_token_secret`: App token secret
-`client_secret`: String used for signing, previously known as private key. If a migration is imminent: use the same secret as the old environment
+`admin_password`: Your Administrator password. Minimum 8 chars and maximum 100 chars. Requires both uppercase and lowercase letters and must also contain digits and symbols
+`app_token_secret`: Your app token secret
+`client_secret`: Arbitrary secret string used for signing, previously known as private key. If a migration is imminent: use the same secret as the old environment
 `api_token`: Usually `Bearer app:<app_token_secret>` where `app:<app_token_secret>` also is base64 encoded
 
 # Environment variables
