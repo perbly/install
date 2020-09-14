@@ -14,13 +14,13 @@ x-shared-api-variables: &shared-api-variables
   ONIFY_adminUser_password: ${ADMIN_PASSWORD}
   ONIFY_adminUser_email: hello@onify.co
   ONIFY_apiTokens_app_secret: ${API_APP_SECRET}
-  ONIFY_resources_baseDir: ./resources
-  ONIFY_resources_tempDir: ./temp
+  ONIFY_logging_logLevel: info
+  ONIFY_resources_baseDir: ./data/resources
+  ONIFY_resources_tempDir: ./data/storage
   ONIFY_websockets_agent_url: ws://linked-agent-server:8080/hub
 
 x-shared-api-volumes: &shared-api-volumes # make sure the paths exist
-  - ./tmp/resources:/usr/app/resources
-  - ./tmp/temp_storage:/usr/app/temp
+  - ./tmp/resources:/usr/app/data
 
 services:
   elasticsearch:
