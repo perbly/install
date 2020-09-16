@@ -79,6 +79,7 @@ services:
     depends_on:
       - api
     environment:
+      NODE_ENV: development
       ONIFY_API_TOKEN: ${APP_API_TOKEN}
       ONIFY_API_URL_INTERNAL: http://linked-api:8181/api/v2
       ONIFY_API_URL_EXTERNAL: http://localhost:8181/api/v2
