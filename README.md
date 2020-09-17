@@ -7,8 +7,8 @@ Examples on how to install Onify platform in different environments.
 
 # Onify Hub
 
-- Install in [Kubernetes](/hub/kubernetes/README.md)
-- Install in [Docker](/hub/docker/README.md)
+- Install in [Kubernetes](/hub/kubernetes)
+- Install in [Docker](/hub/docker)
 
 # Onify Agent
 
@@ -16,5 +16,5 @@ Coming soon...
 
 - Install in Linux
 - Install in Windows
-- Install in Docker
+- Install in [Docker](/agent/docker)
 
