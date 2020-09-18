@@ -12,9 +12,7 @@ Examples on how to install Onify platform in different environments.
 
 # Onify Agent
 
-Coming soon...
-
-- Install in Linux
-- Install in Windows
 - Install in [Docker](/agent/docker)
+- Install in Linux (Coming soon)
+- Install in Windows (Coming soon)
 
