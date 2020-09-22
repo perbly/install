@@ -4,6 +4,7 @@ x-shared-api-variables: &shared-api-variables
   NODE_ENV: development
   ENV_PREFIX: ONIFY_
   INTERPRET_CHAR_AS_DOT: _
+  ONIFY_logging_log: stdout
   ONIFY_db_elasticsearch_host: http://linked-elasticsearch:9200
   ONIFY_db_indexPrefix: dev
   ONIFY_client_secret: ${API_CLIENT_SECRET}
@@ -28,7 +29,7 @@ services:
     ports:
       - 9200:9200
     environment:
-      - ES_JAVA_OPTS=-Xms256m -Xmx256m # can be increased but make sure it doesn't exceed docker limits
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m # can be increased but make sure it doesn't exceed docker limits
       - discovery.type=single-node
       - cluster.name=onify
     healthcheck:
