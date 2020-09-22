@@ -62,6 +62,7 @@ Secrets are saved in base64 format
 - `ONIFY_db_elasticsearch_host`: Elastic search host
 - `ONIFY_db_indexPrefix`: Index name prefix, usually client code
 - `ONIFY_initialLicense`: Optional, generated initial license if any
+- `ONIFY_logging_logLevel`: Optional, log level, one of `fatal`, `error`, `warn`, `info`, `debug`, or `trace`, defaults to `warn`
 - `ONIFY_resources_baseDir`: Base directory for storing resource files, usually points to mounted folder
 - `ONIFY_resources_tempDir`: Base directory for storing temporary files, usually points to mounted folder
 - `ONIFY_websockets_agent_url`: Agent server websocket url
@@ -71,6 +72,7 @@ Secrets are saved in base64 format
 * `ONIFY_API_TOKEN` - Auth token for API. from secret `api_token`
 * `ONIFY_API_URL_EXTERNAL` - External url for frontend API calls, should use `api_public_host`
 * `ONIFY_API_URL_INTERNAL` - Internal url for backend connection with API, defaults to `http://api:8181/api/v2`, depends on exposed api service
+* `ONIFY_logging_logLevel`: Optional, log level, one of `fatal`, `error`, `warn`, `info`, `debug`, or `trace`, defaults to `warn`
 
 # Elasticsearch
 
