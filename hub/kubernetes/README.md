@@ -43,10 +43,10 @@ kubectl create secret docker-registry onify-regcred \
 
 Secrets are saved in base64 format
 
-`admin_password`: Your Administrator password. Minimum 8 chars and maximum 100 chars. Requires both uppercase and lowercase letters and must also contain digits and symbols
-`app_token_secret`: Your app token secret
-`client_secret`: Arbitrary secret string used for signing, previously known as private key. If a migration is imminent: use the same secret as the old environment
-`api_token`: Usually `Bearer app:<app_token_secret>` where `app:<app_token_secret>` also is base64 encoded
+- `admin_password`: Your Administrator password. Minimum 8 chars and maximum 100 chars. Requires both uppercase and lowercase letters and must also contain digits and symbols
+- `app_token_secret`: Your app token secret
+- `client_secret`: Arbitrary secret string used for signing, previously known as private key. If a migration is imminent: use the same secret as the old environment
+- `api_token`: [Api token](#api-token) used by app for backend communication
 
 # Environment variables
 
@@ -69,7 +69,7 @@ Secrets are saved in base64 format
 
 ## Environment variables for hub-app
 
-* `ONIFY_API_TOKEN` - Auth token for API. from secret `api_token`
+* `ONIFY_API_TOKEN` - from secret `api_token` used by app for backend communication
 * `ONIFY_API_URL_EXTERNAL` - External url for frontend API calls, should use `api_public_host`
 * `ONIFY_API_URL_INTERNAL` - Internal url for backend connection with API, defaults to `http://api:8181/api/v2`, depends on exposed api service
 * `ONIFY_logging_logLevel`: Optional, log level, one of `fatal`, `error`, `warn`, `info`, `debug`, or `trace`, defaults to `warn`
@@ -102,3 +102,18 @@ Before installing traefik the following hosts have to be decided.
 - `api_public_host`: host for public access to api
 - `app_public_host`: host for public access to app
 
+### Api-token
+
+Token used to authenticate app backend with api. Generated api token from value of `app_token_secret`:
+
+For OSX or Linux
+```sh
+echo "Bearer $(echo -n "app:<value of app_token_secret>" | base64)"
+```
+
+or Windows (Powershell):
+```powershell
+"Bearer " + [Convert]::ToBase64String([Text.Encoding]::UTF8.GetBytes("app:<value of app_token_secret>"))
+```
+
+Remember to convert the token to base64 before saving it to secret manifest.
