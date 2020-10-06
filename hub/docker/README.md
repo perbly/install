@@ -28,7 +28,7 @@ For OSX or Linux
 cat keyfile.json | docker login -u _json_key --password-stdin https://eu.gcr.io/onify-images
 ```
 
-or Windows
+or Windows (cmd)
 ```sh
 docker login -u _json_key --password-stdin https://eu.gcr.io/onify-images < keyfile.json
 ```
