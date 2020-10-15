@@ -5,12 +5,19 @@ Installing Onify Hub on a single Linux machine requires [Microk8s](https://micro
 
 # Preparations
 
-1. Install Microk8s
-2. [Setup Onify using Kubernetes](https://github.com/onify/install/tree/default/hub/kubernetes)
+1. Install snapd
+2. Install Microk8s
+3. [Setup Onify using Kubernetes](https://github.com/onify/install/tree/default/hub/kubernetes)
 
-# Install MicroK8s
+# Install snapd
 
-## Install
+```bash
+sudo yum install snapd
+sudo systemctl enable --now snapd.socket
+sudo ln -s /var/lib/snapd/snap /snap
+```
+
+## Install Microk8s
 
 ```bash
 snap install microk8s --classic
