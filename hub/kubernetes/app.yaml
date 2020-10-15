@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Secret
 metadata:
-  name: app-secrets
+  name: onify-app-secrets
 type: Opaque
 data:
   api_token: <base64-encoded-string> # "Bearer api_token_secret_base64"
