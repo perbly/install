@@ -1,4 +1,4 @@
-Install Onify Hub in kubernetes
+Install Onify Hub in Kubernetes
 ===============================
 
 # Images
